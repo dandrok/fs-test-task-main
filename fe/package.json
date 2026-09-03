@@ -20,7 +20,6 @@
     "build": "tsc && vite build",
     "test": "jest",
     "serve": "vite preview",
-    "prepare": "husky install",
     "commit": "commit",
     "format": "prettier --write --ignore-unknown .",
     "lint": "eslint --cache ./src"
