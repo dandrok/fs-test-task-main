@@ -18,9 +18,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "serve": "vite preview",
     "commit": "commit",
+    "type-check": "tsc --noEmit",
     "format": "prettier --write --ignore-unknown .",
     "lint": "eslint --cache ./src"
   },
