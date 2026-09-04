@@ -1,25 +1,52 @@
-### task
+# Frontend (`fe`)
 
-Install dependencies.
+React application built with TypeScript, Vite, and Tailwind CSS.
 
-```bash
-yarn install
-```
+## Stack
+- React 18
+- TypeScript
+- Vite
+- Tailwind CSS
+- Vitest & React Testing Library
 
-Serve with hot reload at <http://localhost:5173>.
-
-```bash
-yarn run dev
-```
-
-### Lint
+## Quick Start
 
 ```bash
-yarn run lint
-```
+# From repository root:
+npm install              # Installs all monorepo dependencies (fe + be)
+npm run dev:fe           # Starts frontend dev server (or: npm run dev -w fe)
 
-### Build
+# To install or target only the frontend from root:
+npm install -w fe
+
+# Or directly in fe/ directory:
+npm install
+npm run dev
+```
+The application runs at `http://localhost:5173`.
+
+## Environment Variables
+
+Configured in `.env` (or inherited from defaults):
+
+| Variable | Default | Description |
+|---|---|---|
+| `VITE_API_URL` | `http://localhost:5000/api` | Backend API base URL |
+
+## Available Scripts
 
 ```bash
-yarn run build
+npm run dev         # Start local Vite development server
+npm test            # Run Vitest unit & integration tests
+npm run test:watch  # Run Vitest in watch mode
+npm run build       # Type-check with tsc and build production bundle to dist/
+npm run lint        # Run ESLint on src/
+npm run format      # Format code with Prettier
 ```
+
+## Key Implementation Details
+
+- **Data Fetching Hook (`useProducts`)**: Manages `products`, `loading`, and `error` states. Uses `AbortController` to cancel in-flight requests when filters change rapidly, preventing race conditions.
+- **Date Deserialization (`services/api.ts`)**: Converts incoming ISO date strings (`price.validFrom`) into native JavaScript `Date` instances to avoid runtime crashes during date formatting.
+- **Vitest & JSDOM Setup**: Migrated from legacy Jest to Vitest with `@testing-library/react` and `jsdom` for fast component and hook testing.
+

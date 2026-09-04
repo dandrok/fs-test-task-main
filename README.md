@@ -1,3 +1,86 @@
+# Product Catalog Full-Stack Application
+
+Full-stack product catalog with a React frontend and an Express + MongoDB backend, orchestrated via Docker.
+
+## Quick Start
+
+### Prerequisites
+- [Docker](https://docs.docker.com/get-docker/) & Docker Compose
+- [Node.js](https://nodejs.org/) (v20+ recommended)
+
+### 1. Install Dependencies
+Run from the repository root to install dependencies for **both frontend and backend workspaces** in one command:
+```bash
+npm install
+```
+
+### 2. Start Backend & Database
+```bash
+# Starts MongoDB and Express API in Docker with automatic database seeding
+npm run dev:be
+```
+Backend API will be live at `http://localhost:5000` (Health check: `http://localhost:5000/health`).
+
+### 3. Start Frontend
+In a separate terminal:
+```bash
+npm run dev:fe
+```
+Frontend application will be live at `http://localhost:5173`.
+
+### 4. Run Test Suites
+```bash
+npm test -w be   # Backend integration tests (Supertest + Vitest)
+npm test -w fe   # Frontend unit & hook tests (Testing Library + Vitest)
+```
+
+---
+
+## What Was Implemented
+
+### Backend (`be/`)
+- **Express 5 REST API**: Structured in a 3-tier architecture (`routes` -> `controllers` -> `services` -> `models`) with centralized error handling.
+- **Mongoose instead of Raw MongoDB Driver**:
+  - *Why*: Provides schema enforcement, automatic type inference, and index definitions (`code: 1` unique index for O(1) lookups). All read queries use `.lean()` to bypass Mongoose document hydration overhead for fast serialization.
+- **Zod Validation**:
+  - *Why*: Adds a strict validation layer before queries hit the database. Query parameters (`search`, `capacity`, `energyClass`, `feature`, `sort`) are parsed and type-coerced. Invalid input immediately returns a structured `400 Bad Request` instead of failing unexpectedly.
+- **Automated Database Seeding**:
+  - Automatically seeds initial products on server startup (`seedIfEmpty`) when running inside Docker or on cold start. Also includes a standalone CLI seeder (`npm run seed -w be`).
+- **Vitest & Supertest Integration Tests**: Tests covering filter combinations, sorting, search regex, and validation error scenarios.
+
+### Frontend (`fe/`)
+- **Real API Integration**: Replaced static mock data with dynamic fetching from `GET /api/products`.
+- **Custom `useProducts` Hook**:
+  - Manages `products`, `loading`, and `error` states.
+  - Implements `AbortController` cancellation to discard in-flight requests when filters change rapidly, preventing race conditions.
+- **Safe Date Deserialization**: Incoming ISO date strings are converted into native `Date` objects in `services/api.ts` to prevent runtime crashes during date formatting.
+- **Vitest Migration**: Replaced deprecated/broken Jest configuration with modern Vitest and React Testing Library, adding unit tests for hook state transitions and API query serialization.
+
+---
+
+## Extras & Above-and-Beyond Additions
+
+1. **GitHub Actions CI (`.github/workflows/ci.yml`)**:
+   - Automated pipeline running on pull requests and pushes to `main`.
+   - Runs `npm ci`, backend linting, TypeScript compilation (`tsc`), frontend production build, and both test suites.
+2. **Containerization & Networking**:
+   - Multi-container `docker-compose.yml` with isolated internal networking connecting the Express API to MongoDB.
+   - Host-mapped ports (`5000` and `27017`) allow both containerized and local hybrid development workflows.
+3. **Consistent Code Quality Tooling**:
+   - Added matching ESLint and Prettier configurations to the backend workspace to ensure consistent styling and linting across the monorepo.
+4. **Tailwind CSS Fix**:
+   - Fixed broken frontend styling build configuration and updated PostCSS/Tailwind dependencies.
+
+---
+
+## Project Structure
+
+- [`be/`](./be) - Express + TypeScript + Mongoose + Zod backend. See [be/README.md](./be/README.md) for endpoint specifications and local setup.
+- [`fe/`](./fe) - React + TypeScript + Vite + Tailwind frontend. See [fe/README.md](./fe/README.md) for script details and frontend architecture.
+
+---
+
+
 # Recruitment Full Stack Test Task
 
 Welcome to the Recruitment Full Stack Test Task! This task is designed to assess your skills in building a full-stack application where you'll create the backend using MongoDB as the database and connect it to the frontend located in the 'fe' folder of this repository.
