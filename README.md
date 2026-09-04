@@ -42,6 +42,7 @@ npm run lint -w fe  # Frontend ESLint
   - `useProducts` hook manages API integration with `AbortController` cancellation to eliminate race conditions.
   - Search queries are throttled with a custom `useDebounce` hook (300ms) to prevent request flooding while keeping input typing.
   - Hydrates incoming ISO dates (`price.validFrom` -> `Date`) to prevent client-side formatting runtime errors.
+  - Responsive Grid: Replaced rigid desktop grids with responsive CSS Grid breakpoints across filters and product cards for tablet and mobile viewports.
 - **Tooling & CI**:
   - Native `.githooks/` (`pre-commit` for linting, `pre-push` for full test suites) via Git `core.hooksPath` (zero dependencies).
   - GitHub Actions workflow (`ci.yml`) running linting, TypeScript compilation, and all tests on PRs and pushes.
