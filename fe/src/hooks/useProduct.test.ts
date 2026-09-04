@@ -3,6 +3,7 @@
  */
 import { describe, it, expect, vi, beforeEach, beforeAll, afterAll } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
+import { act } from 'react';
 import { useProducts } from './useProducts';
 import * as api from '../services/api';
 
@@ -10,8 +11,10 @@ describe('useProducts Hook (State Management & Race Conditions)', () => {
   const originalError = console.error;
 
   beforeAll(() => {
-    console.error = (...args: any[]) => {
-      if (typeof args[0] === 'string' && args[0].includes('ReactDOMTestUtils.act')) return;
+    (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT =
+      true;
+    console.error = (...args: unknown[]) => {
+      if (typeof args[0] === 'string' && args[0].includes('act')) return;
       originalError(...args);
     };
   });
@@ -73,5 +76,30 @@ describe('useProducts Hook (State Management & Race Conditions)', () => {
     });
 
     expect(result.current.error).toBeNull();
+  });
+
+  it('should debounce search query changes before calling API', async () => {
+    vi.useFakeTimers();
+    const fetchSpy = vi.spyOn(api, 'fetchProducts').mockResolvedValue([]);
+
+    const { rerender } = renderHook(({ query }) => useProducts(emptyFilters, query), {
+      initialProps: { query: '' },
+    });
+
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+
+    rerender({ query: 'Q' });
+    rerender({ query: 'Quick' });
+
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      vi.advanceTimersByTime(300);
+    });
+
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+    expect(fetchSpy).toHaveBeenLastCalledWith(emptyFilters, 'Quick', expect.any(AbortSignal));
+
+    vi.useRealTimers();
   });
 });
