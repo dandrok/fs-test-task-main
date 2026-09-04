@@ -5,30 +5,41 @@ Full-stack product catalog with a React frontend and an Express + MongoDB backen
 ## Quick Start
 
 ### Prerequisites
+
 - [Docker](https://docs.docker.com/get-docker/) & Docker Compose
 - [Node.js](https://nodejs.org/) (v20+ recommended)
 
 ### 1. Install Dependencies
+
 Run from the repository root to install dependencies for **both frontend and backend workspaces** in one command:
+
 ```bash
 npm install
 ```
 
+> **Note:** `npm install` automatically activates the native Git hooks (`pre-commit` & `pre-push`) via the root `prepare` script without requiring Husky.
+
 ### 2. Start Backend & Database
+
 ```bash
 # Starts MongoDB and Express API in Docker with automatic database seeding
 npm run dev:be
 ```
+
 Backend API will be live at `http://localhost:5000` (Health check: `http://localhost:5000/health`).
 
 ### 3. Start Frontend
+
 In a separate terminal:
+
 ```bash
 npm run dev:fe
 ```
+
 Frontend application will be live at `http://localhost:5173`.
 
 ### 4. Run Test Suites
+
 ```bash
 npm test -w be   # Backend integration tests (Supertest + Vitest)
 npm test -w fe   # Frontend unit & hook tests (Testing Library + Vitest)
@@ -39,22 +50,25 @@ npm test -w fe   # Frontend unit & hook tests (Testing Library + Vitest)
 ## What Was Implemented
 
 ### Backend (`be/`)
+
 - **Express 5 REST API**: Structured in a 3-tier architecture (`routes` -> `controllers` -> `services` -> `models`) with centralized error handling.
 - **Mongoose instead of Raw MongoDB Driver**:
-  - *Why*: Provides schema enforcement, automatic type inference, and index definitions (`code: 1` unique index for O(1) lookups). All read queries use `.lean()` to bypass Mongoose document hydration overhead for fast serialization.
+  - _Why_: Provides schema enforcement, automatic type inference, and index definitions (`code: 1` unique index for O(1) lookups). All read queries use `.lean()` to bypass Mongoose document hydration overhead for fast serialization.
 - **Zod Validation**:
-  - *Why*: Adds a strict validation layer before queries hit the database. Query parameters (`search`, `capacity`, `energyClass`, `feature`, `sort`) are parsed and type-coerced. Invalid input immediately returns a structured `400 Bad Request` instead of failing unexpectedly.
+  - _Why_: Adds a strict validation layer before queries hit the database. Query parameters (`search`, `capacity`, `energyClass`, `feature`, `sort`) are parsed and type-coerced. Invalid input immediately returns a structured `400 Bad Request` instead of failing unexpectedly.
 - **Automated Database Seeding**:
   - Automatically seeds initial products on server startup (`seedIfEmpty`) when running inside Docker or on cold start. Also includes a standalone CLI seeder (`npm run seed -w be`).
 - **Vitest & Supertest Integration Tests**: Tests covering filter combinations, sorting, search regex, and validation error scenarios.
 
 ### Frontend (`fe/`)
+
 - **Real API Integration**: Replaced static mock data with dynamic fetching from `GET /api/products`.
 - **Custom `useProducts` Hook**:
   - Manages `products`, `loading`, and `error` states.
-  - Implements `AbortController` cancellation to discard in-flight requests when filters change rapidly, preventing race conditions.
+  - Implements search debouncing via a custom generic `useDebounce` hook (300ms delay) to prevent network request spamming during rapid typing.
+  - Implements `AbortController` cancellation to discard in-flight requests when filters change, eliminating race conditions.
 - **Safe Date Deserialization**: Incoming ISO date strings are converted into native `Date` objects in `services/api.ts` to prevent runtime crashes during date formatting.
-- **Vitest Migration**: Replaced deprecated/broken Jest configuration with modern Vitest and React Testing Library, adding unit tests for hook state transitions and API query serialization.
+- **Vitest Migration**: Replaced deprecated/broken Jest configuration with modern Vitest and React Testing Library, adding unit and edge-case tests for hook state transitions, debounce coalescing, and API query serialization.
 
 ---
 
@@ -63,12 +77,19 @@ npm test -w fe   # Frontend unit & hook tests (Testing Library + Vitest)
 1. **GitHub Actions CI (`.github/workflows/ci.yml`)**:
    - Automated pipeline running on pull requests and pushes to `main`.
    - Runs `npm ci`, backend linting, TypeScript compilation (`tsc`), frontend production build, and both test suites.
-2. **Containerization & Networking**:
+2. **Native Git Hooks (`pre-commit` & `pre-push`)**:
+   - Zero-dependency hooks configured via native `core.hooksPath .githooks` (eliminates third-party wrappers like Husky).
+   - **`pre-commit`**: Runs ESLint across both `be` and `fe` to prevent lint regressions from entering Git history.
+   - **`pre-push`**: Runs the complete Vitest test suites to guarantee broken code never reaches GitHub.
+   - Auto-activated upon running `npm install` via the root `"prepare"` lifecycle script.
+3. **Search Input Debouncing (`useDebounce`)**:
+   - Implemented a custom generic `useDebounce` hook that decouples real-time input rendering (60 FPS) from asynchronous network dispatch, backed by fake-timer unit tests.
+4. **Containerization & Networking**:
    - Multi-container `docker-compose.yml` with isolated internal networking connecting the Express API to MongoDB.
    - Host-mapped ports (`5000` and `27017`) allow both containerized and local hybrid development workflows.
-3. **Consistent Code Quality Tooling**:
+5. **Consistent Code Quality Tooling**:
    - Added matching ESLint and Prettier configurations to the backend workspace to ensure consistent styling and linting across the monorepo.
-4. **Tailwind CSS Fix**:
+6. **Tailwind CSS Fix**:
    - Fixed broken frontend styling build configuration and updated PostCSS/Tailwind dependencies.
 
 ---
@@ -79,7 +100,6 @@ npm test -w fe   # Frontend unit & hook tests (Testing Library + Vitest)
 - [`fe/`](./fe) - React + TypeScript + Vite + Tailwind frontend. See [fe/README.md](./fe/README.md) for script details and frontend architecture.
 
 ---
-
 
 # Recruitment Full Stack Test Task
 

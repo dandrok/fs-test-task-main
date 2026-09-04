@@ -46,7 +46,8 @@ npm run format      # Format code with Prettier
 
 ## Key Implementation Details
 
-- **Data Fetching Hook (`useProducts`)**: Manages `products`, `loading`, and `error` states. Uses `AbortController` to cancel in-flight requests when filters change rapidly, preventing race conditions.
+- **Data Fetching Hook (`useProducts`)**: Manages `products`, `loading`, and `error` states. Integrates `useDebounce` to throttle text search queries by 300ms, and `AbortController` to cancel in-flight requests when filters change, preventing race conditions.
+- **Custom `useDebounce` Hook**: Decouples UI input state from network dispatch, fully tested with fake timers and rapid-typing edge cases.
 - **Date Deserialization (`services/api.ts`)**: Converts incoming ISO date strings (`price.validFrom`) into native JavaScript `Date` instances to avoid runtime crashes during date formatting.
 - **Vitest & JSDOM Setup**: Migrated from legacy Jest to Vitest with `@testing-library/react` and `jsdom` for fast component and hook testing.
 
