@@ -10,7 +10,9 @@ Full-stack catalog with a React (Vite) frontend and Express + MongoDB backend in
 - Node.js 20+
 
 ```bash
-# 1. Install dependencies (also enables native git hooks via prepare script)
+# All commands below are run from the repository root:
+
+# 1. Install dependencies (installs monorepo workspaces & configures git hooks)
 npm install
 
 # 2. Start Backend & MongoDB in Docker (auto-seeds on startup)
