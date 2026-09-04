@@ -1,13 +1,17 @@
 FROM node:20-alpine
-    
-    WORKDIR /app
-    
-    COPY package*.json ./
-    
-    RUN npm install
-    
-    COPY . .
-    
-    EXPOSE 5000
-    
-    CMD ["npm", "run", "dev"]
+
+WORKDIR /app
+
+RUN chown -R node:node /app
+
+USER node
+
+COPY --chown=node:node package*.json ./
+
+RUN npm install
+
+COPY --chown=node:node . .
+
+EXPOSE 5000
+
+CMD ["npm", "run", "dev"]
