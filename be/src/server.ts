@@ -5,7 +5,7 @@ import { seedIfEmpty } from './scripts/seeding';
 
 dotenv.config();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5005;
 
 const startServer = async (): Promise<void> => {
   await connectDB();

@@ -1,7 +1,7 @@
 import { FiltersContextType } from 'contexts/filters';
 import { IProduct } from 'interfaces/product';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'http://localhost:5005/api';
 
 export const fetchProducts = async (
   filters: FiltersContextType['filters'],

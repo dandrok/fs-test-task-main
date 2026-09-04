@@ -24,16 +24,10 @@ export const Filters = () => {
         <Search />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-          <FilterItem title="Sortuj" options={sortOptions} filter="sort" />
-          <FilterItem title="Funkcje" options={featuresOptions} filter="feature" />
-          <FilterItem
-            title="Klasa energetyczna"
-            options={energyClassOptions}
-            filter="energyClass"
-          />
-          <FilterItem title="Pojemność" options={capacityOptions} filter="capacity" />
-        </div>
+        <FilterItem title="Sortuj" options={sortOptions} filter="sort" />
+        <FilterItem title="Funkcje" options={featuresOptions} filter="feature" />
+        <FilterItem title="Klasa energetyczna" options={energyClassOptions} filter="energyClass" />
+        <FilterItem title="Pojemność" options={capacityOptions} filter="capacity" />
       </div>
     </div>
   );
