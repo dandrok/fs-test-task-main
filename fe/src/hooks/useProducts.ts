@@ -2,11 +2,14 @@ import { FiltersContextType } from 'contexts/filters';
 import { IProduct } from 'interfaces/product';
 import { useState, useEffect } from 'react';
 import { fetchProducts } from 'services/api';
+import { useDebounce } from './useDebounce';
 
 export const useProducts = (filters: FiltersContextType['filters'], query: string) => {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const debouncedQuery = useDebounce(query, 300);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -16,7 +19,7 @@ export const useProducts = (filters: FiltersContextType['filters'], query: strin
         setLoading(true);
         setError(null);
 
-        const data = await fetchProducts(filters, query, controller.signal);
+        const data = await fetchProducts(filters, debouncedQuery, controller.signal);
         setProducts(data);
       } catch (err: any) {
         if (err.name === 'AbortError') return;
@@ -29,7 +32,7 @@ export const useProducts = (filters: FiltersContextType['filters'], query: strin
     loadProducts();
 
     return () => controller.abort();
-  }, [filters, query]);
+  }, [filters, debouncedQuery]);
 
   return { products, loading, error };
 };
