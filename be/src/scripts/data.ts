@@ -1,4 +1,4 @@
-import { IProduct } from '../interfaces/product';
+import { IProduct } from '../types/product';
 
 export const mockData: IProduct[] = [
   {

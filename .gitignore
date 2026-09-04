@@ -30,6 +30,6 @@ yarn-error.log*
 *.map
 
 # Ignore any dependencies' lock files
-package-lock.json
 yarn.lock
 
+.eslintcache

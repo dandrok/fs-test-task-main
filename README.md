@@ -1,3 +1,62 @@
+# Product Catalog Full-Stack Application
+
+Full-stack catalog with a React (Vite) frontend and Express + MongoDB backend in Docker.
+
+## Quick Start
+
+### Prerequisites
+
+- Docker & Docker Compose
+- Node.js 20+
+
+```bash
+# 1. Install dependencies (also enables native git hooks via prepare script)
+npm install
+
+# 2. Start Backend & MongoDB in Docker (auto-seeds on startup)
+npm run dev:be
+
+# 3. Start Frontend (in a separate terminal)
+npm run dev:fe
+```
+
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:5000 (Health check: `GET /health`)
+
+### Tests & Code Quality
+
+```bash
+npm test -w be      # Backend Vitest integration tests
+npm test -w fe      # Frontend Vitest hook/service tests
+npm run lint -w be  # Backend ESLint
+npm run lint -w fe  # Frontend ESLint
+```
+
+---
+
+## Technical Notes
+
+- **Backend Architecture (`be/`)**: Express 5 structured into routes, controllers, services, and models. Uses Mongoose with `.lean()` queries and an index on `code: 1`.
+- **Validation**: Strict runtime query validation via Zod (`product.schema.ts`). Unsupported parameters or invalid enum values return structured `400 Bad Request` responses.
+- **Frontend Optimization (`fe/`)**:
+  - `useProducts` hook manages API integration with `AbortController` cancellation to eliminate race conditions.
+  - Search queries are throttled with a custom `useDebounce` hook (300ms) to prevent request flooding while keeping input typing.
+  - Hydrates incoming ISO dates (`price.validFrom` -> `Date`) to prevent client-side formatting runtime errors.
+  - Responsive Grid: Replaced rigid desktop grids with responsive CSS Grid breakpoints across filters and product cards for tablet and mobile viewports.
+- **Tooling & CI**:
+  - Native `.githooks/` (`pre-commit` for linting, `pre-push` for full test suites) via Git `core.hooksPath` (zero dependencies).
+  - GitHub Actions workflow (`ci.yml`) running linting, TypeScript compilation, and all tests on PRs and pushes.
+  - Root `.npmrc` configured with `audit=false` for fast local installs.
+
+---
+
+## Project Structure
+
+- [`be/`](./be) - Express + TypeScript + Mongoose + Zod backend. See [be/README.md](./be/README.md) for endpoint specifications and local setup.
+- [`fe/`](./fe) - React + TypeScript + Vite + Tailwind frontend. See [fe/README.md](./fe/README.md) for script details and frontend architecture.
+
+---
+
 # Recruitment Full Stack Test Task
 
 Welcome to the Recruitment Full Stack Test Task! This task is designed to assess your skills in building a full-stack application where you'll create the backend using MongoDB as the database and connect it to the frontend located in the 'fe' folder of this repository.

@@ -1,0 +1,6 @@
+#!/bin/sh
+set -e
+
+echo "Running pre-push test suites..."
+npm test -w be
+npm test -w fe

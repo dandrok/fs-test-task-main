@@ -27,7 +27,7 @@ export const ProductCard = (props: IProduct) => {
   };
 
   return (
-    <div className="flex flex-col bg-white rounded-2xl p-6">
+    <div className="flex flex-col bg-white rounded-2xl p-6 max-w-md">
       <div className={'flex justify-center mb-4'}>
         <img src={image} alt={name} className="h-48 object-cover rounded-2xl" />
       </div>

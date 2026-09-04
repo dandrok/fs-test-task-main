@@ -1,4 +1,5 @@
-import { Dropdown, DropdownOption } from '../dropdown';
+import { FilterItem } from 'components/filterItem';
+import { DropdownOption } from '../dropdown';
 import { Search } from '../search';
 
 const sortOptions: DropdownOption[] = [
@@ -22,22 +23,16 @@ export const Filters = () => {
       <div className="mb-8 pt-6 flex max-w-xs mx-auto">
         <Search />
       </div>
-      <div className="grid grid-cols-4 gap-x-3 mb-4">
-        <div>
-          <div className="block text-sm font-bold text-black text-lg mb-2">Sortuj</div>
-          <Dropdown options={sortOptions} filter={'sort'} />
-        </div>
-        <div>
-          <div className="block text-sm font-bold text-black text-lg mb-2">Funkcje</div>
-          <Dropdown options={featuresOptions} filter={'feature'} />
-        </div>
-        <div>
-          <div className="block text-sm font-bold text-black text-lg mb-2">Klasa energetyczna</div>
-          <Dropdown options={energyClassOptions} filter={'energyClass'} />
-        </div>
-        <div>
-          <div className="block text-sm font-bold text-black text-lg mb-2">Pojemność</div>
-          <Dropdown options={capacityOptions} filter={'capacity'} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+          <FilterItem title="Sortuj" options={sortOptions} filter="sort" />
+          <FilterItem title="Funkcje" options={featuresOptions} filter="feature" />
+          <FilterItem
+            title="Klasa energetyczna"
+            options={energyClassOptions}
+            filter="energyClass"
+          />
+          <FilterItem title="Pojemność" options={capacityOptions} filter="capacity" />
         </div>
       </div>
     </div>
