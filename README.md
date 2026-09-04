@@ -6,7 +6,7 @@ Full-stack catalog with a React (Vite) frontend and Express + MongoDB backend in
 
 ### Prerequisites
 
-- Docker & Docker Compose
+- Docker & Docker Compose (e.g., [Docker Desktop](https://www.docker.com/products/docker-desktop/) on macOS/Windows, Docker Engine on Linux)
 - Node.js 20+
 
 ```bash
@@ -21,7 +21,12 @@ npm run dev:fe
 ```
 
 - Frontend: http://localhost:5173
-- Backend API: http://localhost:5000 (Health check: `GET /health`)
+- Backend API: http://localhost:5005 (Health check: `GET /health`)
+
+### Troubleshooting
+
+- **Docker daemon connection error:** Ensure Docker Desktop (macOS/Windows) or the Docker service (Linux) is running before launching `npm run dev:be`.
+- **Port conflicts:** The backend binds to port `5005` by default to prevent collisions with host OS daemons (e.g., macOS AirPlay on port `5000`).
 
 ### Tests & Code Quality
 
