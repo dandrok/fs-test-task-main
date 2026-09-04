@@ -1,14 +1,5 @@
 # Frontend (`fe`)
 
-React application built with TypeScript, Vite, and Tailwind CSS.
-
-## Stack
-- React 18
-- TypeScript
-- Vite
-- Tailwind CSS
-- Vitest & React Testing Library
-
 ## Quick Start
 
 ```bash
@@ -23,14 +14,15 @@ npm install -w fe
 npm install
 npm run dev
 ```
+
 The application runs at `http://localhost:5173`.
 
 ## Environment Variables
 
 Configured in `.env` (or inherited from defaults):
 
-| Variable | Default | Description |
-|---|---|---|
+| Variable       | Default                     | Description          |
+| -------------- | --------------------------- | -------------------- |
 | `VITE_API_URL` | `http://localhost:5000/api` | Backend API base URL |
 
 ## Available Scripts
@@ -44,10 +36,8 @@ npm run lint        # Run ESLint on src/
 npm run format      # Format code with Prettier
 ```
 
-## Key Implementation Details
+## Technical Notes
 
-- **Data Fetching Hook (`useProducts`)**: Manages `products`, `loading`, and `error` states. Integrates `useDebounce` to throttle text search queries by 300ms, and `AbortController` to cancel in-flight requests when filters change, preventing race conditions.
-- **Custom `useDebounce` Hook**: Decouples UI input state from network dispatch, fully tested with fake timers and rapid-typing edge cases.
-- **Date Deserialization (`services/api.ts`)**: Converts incoming ISO date strings (`price.validFrom`) into native JavaScript `Date` instances to avoid runtime crashes during date formatting.
-- **Vitest & JSDOM Setup**: Migrated from legacy Jest to Vitest with `@testing-library/react` and `jsdom` for fast component and hook testing.
-
+- `useProducts`: Data-fetching hook with `AbortController` cancellation and 300ms search debouncing via `useDebounce`.
+- `services/api.ts`: Hydrates incoming ISO date strings (`price.validFrom` -> `Date`) to prevent component date formatting errors.
+- Vitest + `@testing-library/react` configured with `jsdom` for fast component and hook tests.

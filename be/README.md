@@ -21,11 +21,13 @@ This starts MongoDB and the Express API. The database is automatically seeded on
 ### 2. Run Locally (requires local MongoDB)
 
 ```bash
-# From repository root:
-npm install              # Installs all monorepo dependencies (or: npm install -w be)
-npm run dev -w be        # Runs backend dev server with hot reload
+# 1. Copy environment configuration:
+cp be/.env.example be/.env
 
-# Or directly in be/ directory:
+# 2. Run from repository root:
+npm run dev -w be
+
+# Or directly inside be/:
 npm install
 npm run dev
 ```
